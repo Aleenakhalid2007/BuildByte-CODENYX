@@ -86,7 +86,7 @@ Candidates can view their verification score, earned badges, verified skills, an
 ### Profile Builder
 Candidates create their professional profile with skills, portfolio links, and featured projects.
 
-![Profile Page](screenshots/profile.png)
+![Profile Page](images/profile.png)
 
 
 ### Skill Assessment
@@ -98,7 +98,7 @@ AI-powered assessment system with MCQs and short-answer evaluation.
 ### AI Evaluation Result
 Instant skill verification results with scores, badges, and assessment breakdown.
 
-![Assessment Result](screenshots/result.png)
+![Assessment Result](images/result.png)
 
 
 ### Recruiter Dashboard
