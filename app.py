@@ -195,7 +195,6 @@ def dashboard():
         SELECT
             users.name,
             users.email,
-
             profiles.bio,
             profiles.skills,
             profiles.github,
