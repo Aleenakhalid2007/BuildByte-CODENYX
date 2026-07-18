@@ -72,6 +72,8 @@ CREATE TABLE IF NOT EXISTS assessments (
 
     completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
+    UNIQUE(user_id, skill),
+
     FOREIGN KEY(user_id) REFERENCES users(id)
 
 )
