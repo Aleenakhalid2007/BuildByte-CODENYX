@@ -534,7 +534,7 @@ Questions:
 # ==========================
 @app.route("/employer")
 def employer():
-    if "user_id" not in session or session.get("role") != "employer":
+    if "user_id" not in session or session.get("role") not in ["employer", "recruiter"]:
         return redirect(url_for("login"))
 
     conn = get_db_connection()
