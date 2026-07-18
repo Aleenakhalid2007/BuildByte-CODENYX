@@ -577,17 +577,28 @@ def employer():
 # ==========================
 @app.route("/candidate/<int:user_id>")
 def candidate_view(user_id):
-    if "user_id" not in session or session.get("role") != "employer":
-        return redirect(url_for("login"))
 
     conn = get_db_connection()
+
     candidate = conn.execute("""
-        SELECT users.id, users.name, users.email, profiles.bio, profiles.skills,
-               profiles.github, profiles.linkedin, profiles.project_name, profiles.project_description
+        SELECT
+            users.id,
+            users.name,
+            users.email,
+            profiles.bio,
+            profiles.skills,
+            profiles.github,
+            profiles.linkedin,
+            profiles.project_name,
+            profiles.project_description
         FROM users
-        JOIN profiles ON users.id = profiles.user_id
+        LEFT JOIN profiles
+        ON users.id = profiles.user_id
         WHERE users.id = ?
     """, (user_id,)).fetchone()
+
+    print(candidate)
+
     conn.close()
 
     if not candidate:
