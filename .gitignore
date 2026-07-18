@@ -1,0 +1,12 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# SQLite databases
+*.db
+
+# VS Code
+.vscode/

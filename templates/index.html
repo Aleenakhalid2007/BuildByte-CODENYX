@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillAI</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+
+        <a class="navbar-brand fw-bold" href="/">
+            SkillAI
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/register">Register</a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
+
+
+
+<!-- ================= HERO SECTION ================= -->
+
+<section class="hero">
+
+    <div class="container text-center">
+
+        <h1>
+            Skills Speak Louder Than Resumes
+        </h1>
+
+        <p class="lead mt-3">
+            Demonstrate your real abilities through verified skills and projects, helping recruiters discover talent beyond traditional resumes.
+        </p>
+
+        <div class="hero-buttons mt-4">
+
+            <a href="/register" class="btn btn-primary btn-lg">
+                Get Started
+            </a>
+
+            <a href="#how-it-works" class="btn btn-outline-custom btn-lg">
+                Learn More
+            </a>
+
+        </div>
+
+
+        <div class="row g-4 hero-highlights mt-5">
+
+            <div class="col-md-3 col-sm-6">
+                <div class="highlight-item text-center">
+                    <div class="highlight-icon">⭐</div>
+                    <p>Skill-Based Hiring</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="highlight-item text-center">
+                    <div class="highlight-icon">🤖</div>
+                    <p>Skill Assessment</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="highlight-item text-center">
+                    <div class="highlight-icon">👥</div>
+                    <p>Verified Skills</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="highlight-item text-center">
+                    <div class="highlight-icon">📊</div>
+                    <p>Verified Profiles</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FEATURES SECTION ================= -->
+
+<section class="container py-5">
+
+    <div class="text-center mb-5">
+        <h2>Why choosing SkillAI?</h2>
+        <p>Helping candidates showcase their abilities and recruiters hire with confidence.</p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 text-center h-100">
+                <h3>🎯 Skill Verification
+</h3>
+                <p>Complete practical assessments to prove your abilities.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 text-center h-100">
+                <h3>📊 Verified Skill Score</h3>
+                <p>Receive a verification score based on your completed assessments and projects.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 text-center h-100">
+                <h3>💼 Smart Recruitment</h3>
+                <p>Recruiters discover candidates based on verified skills instead of relying only on resumes.</p>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= HOW IT WORKS SECTION ================= -->
+
+<section class="how-it-works py-5" id="how-it-works">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2>How It Works</h2>
+            <p>Four simple steps to get discovered.</p>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-3 col-sm-6">
+                <div class="step-card text-center">
+                    <div class="step-number">1</div>
+                    <h3>Register</h3>
+                    <p>Create your free SkillAI account in seconds.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="step-card text-center">
+                    <div class="step-number">2</div>
+                    <h3>Complete Challenge</h3>
+                    <p>Take on a skill-based challenge in your field.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="step-card text-center">
+                    <div class="step-number">3</div>
+                    <h3>Get Verified</h3>
+                    <p>Receive your verification score after completing the assessment.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="step-card text-center">
+                    <div class="step-number">4</div>
+                    <h3>Connect with Recruiters</h3>
+                    <p>Recruiters discover your verified profile and connect with you.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>
