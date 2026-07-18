@@ -57,6 +57,64 @@ Traditional hiring relies heavily on resumes and self-reported skills, which are
 
 ---
 
+## Screenshots / Demo Preview
+
+### Landing Page
+SkillAI's modern landing page introducing the AI-powered skill verification platform.
+
+![Landing Page](images/index.png)
+
+
+### Candidate Registration
+Candidates can create an account and choose their role as a candidate or recruiter.
+
+![Registration Page](images/register.png)
+
+
+### Login Page
+Secure login system with password hashing and role-based authentication.
+
+![Login Page](images/login.png)
+
+
+### Candidate Dashboard
+Candidates can view their verification score, earned badges, verified skills, and profile progress.
+
+![Candidate Dashboard](images/dashboard.png)
+
+
+### Profile Builder
+Candidates create their professional profile with skills, portfolio links, and featured projects.
+
+![Profile Page](screenshots/profile.png)
+
+
+### Skill Assessment
+AI-powered assessment system with MCQs and short-answer evaluation.
+
+![Assessment Page](images/challenge.png)
+
+
+### AI Evaluation Result
+Instant skill verification results with scores, badges, and assessment breakdown.
+
+![Assessment Result](screenshots/result.png)
+
+
+### Recruiter Dashboard
+Employers can explore verified candidates and review their demonstrated skills.
+
+![Recruiter Dashboard](images/recruiter.png)
+
+
+### Candidate Verification Profile
+Recruiters can view detailed candidate profiles, skills, projects, and portfolio links.
+
+![Candidate Profile](images/candidate.png)
+
+---
+
+
 ## Project Structure
 
 ```
@@ -69,6 +127,14 @@ BuildByte-Codenyx/
 ├── .env                    # Environment variables (not committed)
 ├── .gitignore
 │
+├── images/
+│   ├── resume.png
+│   ├── candidate.png
+│   ├── challenge.png
+│   ├── index.png
+│   ├── result.png
+|   ├── dashboard.png
+|
 ├── templates/
 │   ├── index.html
 │   ├── register.html
