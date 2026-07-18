@@ -1,14 +1,12 @@
 import sqlite3
 
-# Connect to database (creates it if it doesn't exist)
+# Connect to database
 connection = sqlite3.connect("skillai.db")
-
 cursor = connection.cursor()
 
 # ==========================
-# Create Users Table
+# Users Table
 # ==========================
-
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS users (
 
@@ -26,9 +24,8 @@ CREATE TABLE IF NOT EXISTS users (
 """)
 
 # ==========================
-# Create Profiles Table
+# Profiles Table
 # ==========================
-
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS profiles (
 
@@ -53,10 +50,34 @@ CREATE TABLE IF NOT EXISTS profiles (
 )
 """)
 
-# Save changes
-connection.commit()
+# ==========================
+# Assessment Results Table
+# ==========================
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS assessments (
 
-# Close connection
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    user_id INTEGER NOT NULL,
+
+    skill TEXT NOT NULL,
+
+    score INTEGER NOT NULL,
+
+    badge TEXT,
+
+    verification_status TEXT,
+
+    completed INTEGER DEFAULT 1,
+
+    completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY(user_id) REFERENCES users(id)
+
+)
+""")
+
+connection.commit()
 connection.close()
 
 print("Database Created Successfully!")
