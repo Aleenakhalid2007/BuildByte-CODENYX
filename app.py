@@ -164,23 +164,51 @@ def dashboard():
 
     conn = get_db_connection()
 
-    assessment = conn.execute(
+    assessments = conn.execute(
         """
-        SELECT score, badge, verification_status,skill
-        FROM assessments
-        WHERE user_id=?
-        ORDER BY id DESC
-        LIMIT 1
+        SELECT a.*
+        FROM assessments a
+        INNER JOIN (
+            SELECT skill, MAX(score) AS best_score
+            FROM assessments
+            WHERE user_id=?
+            GROUP BY skill
+        ) b
+        ON a.skill = b.skill
+        AND a.score = b.best_score
+        WHERE a.user_id=?
+        ORDER BY a.score DESC
         """,
-        (session["user_id"],)
-    ).fetchone()
+        (session["user_id"], session["user_id"])
+    ).fetchall()
+
+    if assessments:
+        avg_score = round(
+            sum(a["score"] for a in assessments) / len(assessments)
+        )
+    else:
+        avg_score = 0
 
 
     profile = conn.execute(
         """
-        SELECT skills, project_name
-        FROM profiles
-        WHERE user_id=?
+        SELECT
+            users.name,
+            users.email,
+
+            profiles.bio,
+            profiles.skills,
+            profiles.github,
+            profiles.linkedin,
+            profiles.project_name,
+            profiles.project_description
+
+        FROM users
+
+        LEFT JOIN profiles
+        ON users.id = profiles.user_id
+
+        WHERE users.id=?
         """,
         (session["user_id"],)
     ).fetchone()
@@ -188,13 +216,13 @@ def dashboard():
 
     conn.close()
 
-
     return render_template(
         "dashboard.html",
         name=session.get("name"),
         role=session.get("role"),
-        assessment=assessment,
-        profile=profile
+        assessments=assessments,
+        profile=profile,
+        avg_score=avg_score
     )
 
 # ==========================
@@ -257,7 +285,7 @@ def challenge():
     if profile_data and profile_data["skills"]:
         user_skills = profile_data["skills"].split(",")
 
-    return render_template("challenge.html", user_skills=user_skills)
+    return render_template("challenge.html",  user_skills=list(QUESTION_BANK.keys()))
 
 
 # ==========================
@@ -438,28 +466,59 @@ Questions:
 
     conn = get_db_connection()
 
-    conn.execute(
+    existing = conn.execute(
         """
-        INSERT INTO assessments
-        (
-            user_id,
-            skill,
-            score,
-            badge,
-            verification_status,
-            completed
-        )
-        VALUES (?, ?, ?, ?, ?, ?)
+        SELECT id, score
+        FROM assessments
+        WHERE user_id=? AND skill=?
         """,
-        (
-            session["user_id"],
-            skill,
-            percentage,
-            badge,
-            verification,
-            1
+        (session["user_id"], skill)
+    ).fetchone()
+
+    if existing:
+
+        if percentage > existing["score"]:
+
+            conn.execute(
+                """
+                UPDATE assessments
+                SET score=?,
+                    badge=?,
+                    verification_status=?
+                WHERE id=?
+                """,
+                (
+                    percentage,
+                    badge,
+                    verification,
+                    existing["id"]
+                )
+            )
+
+    else:
+
+        conn.execute(
+            """
+            INSERT INTO assessments
+            (
+                user_id,
+                skill,
+                score,
+                badge,
+                verification_status,
+                completed
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                session["user_id"],
+                skill,
+                percentage,
+                badge,
+                verification,
+                1
+            )
         )
-    )
 
     conn.commit()
     conn.close()
