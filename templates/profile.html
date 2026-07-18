@@ -8,28 +8,21 @@
 
     <title>My Profile - SkillAI</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
-
 <nav class="navbar navbar-expand-lg navbar-dark">
 
     <div class="container">
 
-        <a class="navbar-brand fw-bold" href="/">
-            SkillAI
-        </a>
+        <a class="navbar-brand fw-bold" href="/">SkillAI</a>
 
         <button class="navbar-toggler"
                 type="button"
@@ -57,7 +50,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Logout</a>
+                    <a class="nav-link" href="/logout">Logout</a>
                 </li>
 
             </ul>
@@ -68,80 +61,87 @@
 
 </nav>
 
-<!-- ================= PROFILE SECTION ================= -->
-
 <section class="profile-section">
 
-    <div class="container">
+<div class="container">
 
-        <div class="profile-card">
+<div class="profile-card">
 
-            <h2 class="text-center mb-4">
-                Complete Your Profile
-            </h2>
+<h2 class="text-center mb-2">
+    Complete Your Profile
+</h2>
 
-            <form method="POST" action="/profile">
+<p class="text-center text-muted mb-4">
+    Keep your profile updated so recruiters can discover you.
+</p>
 
-                <!-- ================= PERSONAL INFORMATION ================= -->
+<form method="POST" action="/profile">
 
-                <h4 class="section-title">
-                    Personal Information
-                </h4>
+<!-- ================= PERSONAL INFO ================= -->
 
-                <div class="mb-3">
+<h4 class="section-title">
+    Personal Information
+</h4>
 
-                    <label class="form-label">
-                        Full Name
-                    </label>
+<div class="row">
 
-                    <input
-                        type="text"
-                        name="name"
-                        class="form-control profile-input"
-                        placeholder="Enter your full name"
-                        required>
+<div class="col-md-6 mb-3">
 
-                </div>
+<label class="form-label">
+    Full Name
+</label>
 
-                <div class="mb-4">
+<input
+type="text"
+name="name"
+class="form-control profile-input"
+placeholder="Enter your full name"
+value="{{ session.name }}"
+readonly>
 
-                    <label class="form-label">
-                        Email Address
-                    </label>
+</div>
 
-                    <input
-                        type="email"
-                        name="email"
-                        class="form-control profile-input"
-                        placeholder="Enter your email"
-                        required>
+<div class="col-md-6 mb-3">
 
-                </div>
+<label class="form-label">
+    Email Address
+</label>
 
-                <!-- ================= BIO ================= -->
+<input
+type="email"
+name="email"
+class="form-control profile-input"
+placeholder="Enter your email"
+value="{{ profile.email if profile else '' }}"
+readonly>
 
-                <h4 class="section-title">
-                    About You
-                </h4>
+</div>
 
-                <div class="mb-4">
+</div>
 
-                    <label class="form-label">
-                        Short Bio
-                    </label>
+<!-- ================= BIO ================= -->
 
-                    <textarea
-                        name="bio"
-                        class="form-control profile-input"
-                        rows="4"
-                        placeholder="Tell recruiters about yourself..."
-                        required></textarea>
+<h4 class="section-title">
+    About You
+</h4>
 
-                </div>
+<div class="mb-4">
 
-                <!-- ================= SKILLS ================= -->
+<label class="form-label">
+    Short Bio
+</label>
 
-               
+<textarea
+name="bio"
+rows="4"
+class="form-control profile-input"
+placeholder="Tell recruiters about yourself..."
+required>
+{{ profile.bio if profile else '' }}</textarea>
+
+</div>
+
+<!-- ================= SKILLS ================= -->
 
 <h4 class="section-title">
     Skills
@@ -149,153 +149,200 @@
 
 <div class="mb-4">
 
-    <label class="form-label">
-        Select up to 3 skills you want to be assessed on
-    </label>
+<label class="form-label">
+    Select up to 3 skills you want to be assessed on
+</label>
 
-    <div class="skill-checkbox-group">
+{% set selected_skills = profile.skills.split(",") if profile and profile.skills else [] %}
 
-        <div class="form-check quiz-option">
-            <input class="form-check-input skill-checkbox" type="checkbox" name="skills" value="graphic design" id="skill-design">
-            <label class="form-check-label" for="skill-design">Graphic Design</label>
-        </div>
+<div class="skill-checkbox-group">
 
-        <div class="form-check quiz-option">
-            <input class="form-check-input skill-checkbox" type="checkbox" name="skills" value="software engineering" id="skill-swe">
-            <label class="form-check-label" for="skill-swe">Software Engineering</label>
-        </div>
+    <div class="form-check quiz-option">
+        <input
+            class="form-check-input skill-checkbox"
+            type="checkbox"
+            name="skills"
+            value="graphic design"
+            id="skill-design"
+            {% if "graphic design" in selected_skills %}checked{% endif %}>
 
-        <div class="form-check quiz-option">
-            <input class="form-check-input skill-checkbox" type="checkbox" name="skills" value="teaching" id="skill-teaching">
-            <label class="form-check-label" for="skill-teaching">Teaching</label>
-        </div>
-
-        <small class="text-muted d-block mt-2" id="skillLimitMsg"></small>
-
+        <label class="form-check-label" for="skill-design">
+            Graphic Design
+        </label>
     </div>
+
+    <div class="form-check quiz-option">
+        <input
+            class="form-check-input skill-checkbox"
+            type="checkbox"
+            name="skills"
+            value="software engineering"
+            id="skill-swe"
+            {% if "software engineering" in selected_skills %}checked{% endif %}>
+
+        <label class="form-check-label" for="skill-swe">
+            Software Engineering
+        </label>
+    </div>
+
+    <div class="form-check quiz-option">
+        <input
+            class="form-check-input skill-checkbox"
+            type="checkbox"
+            name="skills"
+            value="teaching"
+            id="skill-teaching"
+            {% if "teaching" in selected_skills %}checked{% endif %}>
+
+        <label class="form-check-label" for="skill-teaching">
+            Teaching
+        </label>
+    </div>
+
+    <small
+        class="text-muted d-block mt-2"
+        id="skillLimitMsg">
+    </small>
 
 </div>
-                <!-- ================= PORTFOLIO ================= -->
 
-                <h4 class="section-title">
-                    Portfolio Links
-                </h4>
+</div>
 
-                <div class="mb-3">
+<!-- ================= PORTFOLIO ================= -->
 
-                    <label class="form-label">
-                        GitHub Profile
-                    </label>
+<h4 class="section-title">
+    Portfolio Links
+</h4>
 
-                    <input
-                        type="url"
-                        name="github"
-                        class="form-control profile-input"
-                        placeholder="https://github.com/username">
+<div class="mb-3">
 
-                </div>
+<label class="form-label">
+    GitHub Profile
+</label>
 
-                <div class="mb-4">
+<input
+type="url"
+name="github"
+class="form-control profile-input"
+placeholder="https://github.com/username"
+value="{{ profile.github if profile else '' }}">
 
-                    <label class="form-label">
-                        LinkedIn Profile
-                    </label>
+</div>
 
-                    <input
-                        type="url"
-                        name="linkedin"
-                        class="form-control profile-input"
-                        placeholder="https://linkedin.com/in/username">
+<div class="mb-4">
 
-                </div>
+<label class="form-label">
+    LinkedIn Profile
+</label>
 
-                <!-- ================= PROJECT ================= -->
+<input
+type="url"
+name="linkedin"
+class="form-control profile-input"
+placeholder="https://linkedin.com/in/username"
+value="{{ profile.linkedin if profile else '' }}">
 
-                <h4 class="section-title">
-                    Featured Project
-                </h4>
+</div>
 
-                <div class="mb-3">
+<!-- ================= PROJECT ================= -->
 
-                    <label class="form-label">
-                        Project Name
-                    </label>
+<h4 class="section-title">
+    Featured Project
+</h4>
 
-                    <input
-                        type="text"
-                        name="project_name"
-                        class="form-control profile-input"
-                        placeholder="Smart Attendance System"
-                        required>
+<div class="mb-3">
 
-                </div>
+<label class="form-label">
+    Project Name
+</label>
 
-                <div class="mb-4">
+<input
+type="text"
+name="project_name"
+class="form-control profile-input"
+placeholder="Smart Attendance System"
+value="{{ profile.project_name if profile else '' }}"
+required>
 
-                    <label class="form-label">
-                        Project Description
-                    </label>
+</div>
 
-                    <textarea
-                        name="project_description"
-                        class="form-control profile-input"
-                        rows="4"
-                        placeholder="Describe your project..."
-                        required></textarea>
+<div class="mb-4">
 
-                </div>
+<label class="form-label">
+    Project Description
+</label>
 
-                <!-- ================= BUTTON ================= -->
+<textarea
+name="project_description"
+rows="4"
+class="form-control profile-input"
+placeholder="Describe your project..."
+required>{{ profile.project_description if profile else '' }}</textarea>
 
-                <div class="text-center">
+</div>
 
-                    <button
-                        type="submit"
-                        class="btn profile-btn">
+<div class="text-center">
 
-                        Save Profile
+<button
+type="submit"
+class="btn profile-btn">
 
-                    </button>
+    Save Profile
 
-                </div>
+</button>
 
-            </form>
+</div>
 
-        </div>
+</form>
 
-    </div>
+</div>
+
+</div>
 
 </section>
-
-<!-- Bootstrap JS -->
-
-<!-- Bootstrap JS -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    const checkboxes = document.querySelectorAll(".skill-checkbox");
-    const limitMsg = document.getElementById("skillLimitMsg");
 
-    checkboxes.forEach(function (cb) {
-        cb.addEventListener("change", function () {
-            const checkedCount = document.querySelectorAll(".skill-checkbox:checked").length;
+const checkboxes = document.querySelectorAll(".skill-checkbox");
+const limitMsg = document.getElementById("skillLimitMsg");
 
-            if (checkedCount >= 3) {
-                checkboxes.forEach(function (box) {
-                    if (!box.checked) {
-                        box.disabled = true;
-                    }
-                });
-                limitMsg.textContent = "Maximum 3 skills selected.";
-            } else {
-                checkboxes.forEach(function (box) {
-                    box.disabled = false;
-                });
-                limitMsg.textContent = "";
+function updateCheckboxState(){
+
+    const checked = document.querySelectorAll(".skill-checkbox:checked");
+
+    if(checked.length >= 3){
+
+        checkboxes.forEach(box=>{
+
+            if(!box.checked){
+                box.disabled = true;
             }
+
         });
-    });
+
+        limitMsg.innerHTML = "Maximum 3 skills selected.";
+
+    }
+
+    else{
+
+        checkboxes.forEach(box=>box.disabled=false);
+        limitMsg.innerHTML="";
+
+    }
+
+}
+
+updateCheckboxState();
+
+checkboxes.forEach(box=>{
+
+    box.addEventListener("change",updateCheckboxState);
+
+});
+
 </script>
 
 </body>
