@@ -1387,3 +1387,14 @@ color:white;
 
     transform:translateY(-4px);
 }
+
+.success-message{
+    background:#dff6e8;
+    color:#0f5132;
+    border:1px solid #a3cfbb;
+    padding:12px 16px;
+    border-radius:10px;
+    margin-bottom:15px;
+    text-align:center;
+    font-weight:600;
+}
