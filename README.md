@@ -7,15 +7,11 @@ Built for **BuildByte Hackathon 2026**
 
 ---
 
-## Team
-
-**Team Name:** [Your Team Name]
+## Team - CODENYX 
 
 **Team Members:**
-- [Member 1 Name] — [Role, e.g. Backend Developer]
-- [Member 2 Name] — [Role, e.g. Frontend Developer]
-- [Member 3 Name] — [Role, e.g. UI/UX Designer]
-- [Member 4 Name] — [Role]
+- Aleena Khalid - CS25056
+- Laiba Qasim - CS25069
 
 ---
 
@@ -193,3 +189,6 @@ Standard library modules used (no install needed): `sqlite3`, `os`, `json`.
 ## License
 
 Built for BuildByte Hackathon 2026 — for educational and demonstration purposes.
+
+- For any query: Contact aleenakhalid2007@gmail.com | desailaiba95@gmail.com 
+- NED UNIVERSITY OF ENGINEERING & TECHNOLOGY, KARACHI
