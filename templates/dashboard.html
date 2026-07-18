@@ -63,9 +63,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/">
-                        Logout
-                    </a>
+                    <a class="nav-link" href="/logout">Logout</a>
                 </li>
 
             </ul>
@@ -88,7 +86,7 @@
         <div class="dashboard-header">
 
             <h1>
-                Welcome 👋
+                 Welcome {{name}} 👋
             </h1>
 
             <p>
@@ -106,34 +104,17 @@
 
                 <div class="dashboard-card">
 
-                    <div class="dashboard-icon">
-                        ⭐
-                    </div>
+                    <div class="dashboard-icon">⭐</div>
 
                     <h2>Verification Score</h2>
 
-                    <h3>0%</h3>
+                    <h3>
+                        {{ assessment.score if assessment else 0 }}%
+                    </h3>
 
-                    <p>Not Verified</p>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-lg-3 col-md-6">
-
-                <div class="dashboard-card">
-
-                    <div class="dashboard-icon">
-                        💻
-                    </div>
-
-                    <h2>Skills</h2>
-
-                    <h3>0</h3>
-
-                    <p>Add your skills</p>
+                    <p>
+                        {{ assessment.verification_status if assessment else "Not Verified" }}
+                    </p>
 
                 </div>
 
@@ -144,15 +125,38 @@
 
                 <div class="dashboard-card">
 
-                    <div class="dashboard-icon">
-                        📁
-                    </div>
+                        <div class="dashboard-icon">💻</div>
+
+                        <h2>Verified Skill</h2>
+
+                        {% if assessment %}
+                            <h3>1</h3>
+                            <p>{{ assessment.skill|title }}</p>
+                        {% else %}
+                            <h3>0</h3>
+                            <p>No verified skills yet</p>
+                        {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="dashboard-card">
+
+                    <div class="dashboard-icon">📁</div>
 
                     <h2>Projects</h2>
 
-                    <h3>0</h3>
+                    <h3>
+                        {{ 1 if profile and profile.project_name else 0 }}
+                    </h3>
 
-                    <p>No projects uploaded</p>
+                    <p>
+                        {{ profile.project_name if profile and profile.project_name else "No projects uploaded" }}
+                    </p>
 
                 </div>
 
@@ -163,15 +167,27 @@
 
                 <div class="dashboard-card">
 
-                    <div class="dashboard-icon">
-                        🏆
-                    </div>
+                    <div class="dashboard-icon">🏆</div>
 
-                    <h2>Badge</h2>
+                    <h2>Achievement Badge</h2>
 
-                    <h3>None</h3>
+                    {% if assessment and assessment.badge %}
 
-                    <p>Complete assessment</p>
+                        <h3>{{ assessment.badge }}</h3>
+
+                        <p class="text-success">
+                            Earned after passing assessment 🎉
+                        </p>
+
+                    {% else %}
+
+                        <h3>None</h3>
+
+                        <p>
+                            Score 60%+ to unlock badges
+                        </p>
+
+                    {% endif %}
 
                 </div>
 
