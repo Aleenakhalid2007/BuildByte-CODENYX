@@ -1,5 +1,12 @@
+# Environment
 .env
+
+# Python
 __pycache__/
 *.pyc
-skillai.db
+
+# SQLite databases
+*.db
+
+# VS Code
 .vscode/
