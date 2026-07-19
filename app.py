@@ -1,4 +1,3 @@
-
 from dotenv import load_dotenv
 load_dotenv()
 import os
@@ -8,6 +7,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from groq import Groq
 from questions import QUESTION_BANK
+import re
 
 app = Flask(__name__)
 app.secret_key = "buildbyte_secret_key_123"
@@ -31,65 +31,118 @@ def index():
 
 
 # ==========================
-# Register
+# Register Page
 # ==========================
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
+
     if request.method == "POST":
+
         name = request.form.get("name")
         email = request.form.get("email")
         password = request.form.get("password")
         confirm_password = request.form.get("confirm_password")
         role = request.form.get("role")
 
+
         if password != confirm_password:
-            return render_template("register.html", error="Passwords do not match")
+            return render_template(
+                "register.html",
+                error="Passwords do not match"
+            )
+
 
         hashed_password = generate_password_hash(password)
 
+
         conn = get_db_connection()
+
         try:
+
             conn.execute(
-                "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
+                """
+                INSERT INTO users
+                (name, email, password, role)
+                VALUES (?, ?, ?, ?)
+                """,
                 (name, email, hashed_password, role)
             )
+
             conn.commit()
+
+
         except sqlite3.IntegrityError:
+
             conn.close()
-            return render_template("register.html", error="Email already registered")
+
+            return render_template(
+                "register.html",
+                error="Email already registered"
+            )
+
+
         conn.close()
 
-        return redirect(url_for("login"))
+        return redirect(url_for("login", registered="1"))
+
 
     return render_template("register.html")
-
 
 # ==========================
 # Login
 # ==========================
 @app.route("/login", methods=["GET", "POST"])
 def login():
+
+    success = None
+
+    if request.args.get("registered"):
+        success = "Registration successful! Please login to continue."
+
     if request.method == "POST":
+
         email = request.form.get("email")
         password = request.form.get("password")
 
         conn = get_db_connection()
-        user = conn.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+
+        user = conn.execute(
+            "SELECT * FROM users WHERE email = ?",
+            (email,)
+        ).fetchone()
+
         conn.close()
 
+
         if user and check_password_hash(user["password"], password):
+
             session["user_id"] = user["id"]
             session["name"] = user["name"]
             session["role"] = user["role"]
 
-            if user["role"] == "employer":
+
+            if user["role"] in ["employer", "recruiter"]:
+
                 return redirect(url_for("employer"))
-            return redirect(url_for("dashboard"))
 
-        return render_template("login.html", error="Invalid email or password")
 
-    return render_template("login.html")
+            elif user["role"] == "candidate":
 
+                return redirect(url_for("dashboard"))
+
+
+        return render_template(
+            "login.html",
+            error="Invalid email or password",
+            success=success
+        )
+
+
+    return render_template(
+        "login.html",
+        success=success
+    )
 
 # ==========================
 # Logout
@@ -105,10 +158,71 @@ def logout():
 # ==========================
 @app.route("/dashboard")
 def dashboard():
+
     if "user_id" not in session:
         return redirect(url_for("login"))
-    return render_template("dashboard.html", name=session.get("name"), role=session.get("role"))
 
+    conn = get_db_connection()
+
+    assessments = conn.execute(
+        """
+        SELECT a.*
+        FROM assessments a
+        INNER JOIN (
+            SELECT skill, MAX(score) AS best_score
+            FROM assessments
+            WHERE user_id=?
+            GROUP BY skill
+        ) b
+        ON a.skill = b.skill
+        AND a.score = b.best_score
+        WHERE a.user_id=?
+        ORDER BY a.score DESC
+        """,
+        (session["user_id"], session["user_id"])
+    ).fetchall()
+
+    if assessments:
+        avg_score = round(
+            sum(a["score"] for a in assessments) / len(assessments)
+        )
+    else:
+        avg_score = 0
+
+
+    profile = conn.execute(
+        """
+        SELECT
+            users.name,
+            users.email,
+            profiles.bio,
+            profiles.skills,
+            profiles.github,
+            profiles.linkedin,
+            profiles.project_name,
+            profiles.project_description
+
+        FROM users
+
+        LEFT JOIN profiles
+        ON users.id = profiles.user_id
+
+        WHERE users.id=?
+        """,
+        (session["user_id"],)
+    ).fetchone()
+
+
+    conn.close()
+
+    return render_template(
+        "dashboard.html",
+        name=session.get("name"),
+        role=session.get("role"),
+        assessments=assessments,
+        profile=profile,
+        avg_score=avg_score
+    )
 
 # ==========================
 # Profile
@@ -170,7 +284,7 @@ def challenge():
     if profile_data and profile_data["skills"]:
         user_skills = profile_data["skills"].split(",")
 
-    return render_template("challenge.html", user_skills=user_skills)
+    return render_template("challenge.html",  user_skills=list(QUESTION_BANK.keys()))
 
 
 # ==========================
@@ -178,9 +292,19 @@ def challenge():
 # ==========================
 @app.route("/assessment")
 def assessment():
-    skill = request.args.get("skill", "software engineering")
+
+    skill = request.args.get("skill")
+
+    if not skill or skill not in QUESTION_BANK:
+        skill = list(QUESTION_BANK.keys())[0]
+
     questions = QUESTION_BANK.get(skill, [])
-    return render_template("assessment.html", questions=questions, skill=skill)
+
+    return render_template(
+        "assessment.html",
+        questions=questions,
+        skill=skill
+    )
 
 
 # ==========================
@@ -212,21 +336,72 @@ def result():
                 "is_correct": is_correct
             })
         else:
-            text_answers_for_ai.append({
-                "id": qid,
-                "question": q["question"],
-                "user_answer": user_answer
-            })
+
+            answer = user_answer.strip().lower()
+
+            if (
+                len(answer) < 5
+                or re.fullmatch(r"(.)\1*", answer)
+                or re.fullmatch(r"[a-z]{1,4}", answer)
+            ):
+
+                breakdown.append({
+                    "question": q["question"],
+                    "type": "text",
+                    "user_answer": user_answer,
+                    "ai_score": 0,
+                    "ai_reason": "Meaningless or too short answer."
+                })
+
+            else:
+
+                text_answers_for_ai.append({
+                    "id": qid,
+                    "question": q["question"],
+                    "user_answer": user_answer
+                })
 
     ai_results = []
     if text_answers_for_ai:
-        prompt = f"""You are evaluating a candidate's answers for a {skill} skill assessment.
-For each question below, give a score out of 10 and a one-line reason.
-Respond ONLY in valid JSON, as a list like:
-[{{"id": "q3", "score": 7, "reason": "..."}}]
+        prompt = f"""
+You are a senior technical interviewer evaluating a {skill} assessment.
 
-Questions and answers:
+Evaluate each answer strictly.
+
+Scoring rules:
+
+- 10 = Complete, technically correct.
+- 8-9 = Mostly correct, minor mistakes.
+- 5-7 = Partially correct.
+- 3-4 = Very weak answer with a few correct ideas.
+- 1-2 = Extremely poor answer with almost no relevant information.
+- 0 = Empty answer, gibberish, random characters, meaningless words, copied question, or answer unrelated to the question.
+
+IMPORTANT:
+If the answer is like:
+"hhhhh"
+"abc"
+"nnnn"
+"12345"
+"hello"
+or any meaningless/random text,
+the score MUST be 0.
+
+Return ONLY valid JSON.
+
+Example:
+
+[
+  {{
+    "id":"q10",
+    "score":0,
+    "reason":"Meaningless or unrelated answer."
+  }}
+]
+
+Questions:
 """
+
         for item in text_answers_for_ai:
             prompt += f'\nID: {item["id"]}\nQuestion: {item["question"]}\nAnswer: {item["user_answer"]}\n'
 
@@ -237,6 +412,9 @@ Questions and answers:
             )
             raw_text = response.choices[0].message.content.strip()
             raw_text = raw_text.replace("```json", "").replace("```", "").strip()
+            print("\n========== RAW LLM RESPONSE ==========")
+            print(raw_text)
+            print("======================================\n")
             ai_results = json.loads(raw_text)
         except Exception as e:
             print("AI evaluation error:", e)
@@ -264,8 +442,85 @@ Questions and answers:
 
     total_earned = mcq_score_earned + text_score_earned
     total_max = mcq_max + text_max_score
+
     percentage = round((total_earned / total_max) * 100) if total_max > 0 else 0
 
+    # Save assessment result
+    if "user_id" in session:
+
+        badge = None
+        verification = "Not Verified"
+
+        if percentage >= 90:
+            badge = "Skill Master"
+            verification = "Verified"
+
+        elif percentage >= 75:
+            badge = "Skill Pro"
+            verification = "Verified"
+
+        elif percentage >= 60:
+            badge = "Skill Starter"
+            verification = "Verified"
+
+    conn = get_db_connection()
+
+    existing = conn.execute(
+        """
+        SELECT id, score
+        FROM assessments
+        WHERE user_id=? AND skill=?
+        """,
+        (session["user_id"], skill)
+    ).fetchone()
+
+    if existing:
+
+        if percentage > existing["score"]:
+
+            conn.execute(
+                """
+                UPDATE assessments
+                SET score=?,
+                    badge=?,
+                    verification_status=?
+                WHERE id=?
+                """,
+                (
+                    percentage,
+                    badge,
+                    verification,
+                    existing["id"]
+                )
+            )
+
+    else:
+
+        conn.execute(
+            """
+            INSERT INTO assessments
+            (
+                user_id,
+                skill,
+                score,
+                badge,
+                verification_status,
+                completed
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                session["user_id"],
+                skill,
+                percentage,
+                badge,
+                verification,
+                1
+            )
+        )
+
+    conn.commit()
+    conn.close()
     return render_template(
         "result.html",
         skill=skill,
@@ -274,24 +529,44 @@ Questions and answers:
         total=total,
         breakdown=breakdown
     )
-
-
 # ==========================
 # Employer Dashboard
 # ==========================
 @app.route("/employer")
 def employer():
-    if "user_id" not in session or session.get("role") != "employer":
+    if "user_id" not in session or session.get("role") not in ["employer", "recruiter"]:
         return redirect(url_for("login"))
 
     conn = get_db_connection()
     candidates = conn.execute("""
-        SELECT users.id, users.name, users.email, profiles.bio, profiles.skills,
-               profiles.github, profiles.linkedin, profiles.project_name
-        FROM users
-        JOIN profiles ON users.id = profiles.user_id
-        WHERE users.role = 'candidate'
-    """).fetchall()
+    SELECT 
+        users.id,
+        users.name,
+        users.email,
+
+        profiles.bio,
+        profiles.skills,
+        profiles.github,
+        profiles.linkedin,
+        profiles.project_name,
+
+        assessments.score,
+        assessments.badge,
+        assessments.verification_status
+
+    FROM users
+
+    JOIN profiles 
+    ON users.id = profiles.user_id
+
+    LEFT JOIN assessments
+    ON users.id = assessments.user_id
+
+    WHERE users.role = 'candidate'
+
+    GROUP BY users.id
+
+""").fetchall()
     conn.close()
 
     return render_template("employer.html", candidates=candidates)
@@ -302,17 +577,28 @@ def employer():
 # ==========================
 @app.route("/candidate/<int:user_id>")
 def candidate_view(user_id):
-    if "user_id" not in session or session.get("role") != "employer":
-        return redirect(url_for("login"))
 
     conn = get_db_connection()
+
     candidate = conn.execute("""
-        SELECT users.id, users.name, users.email, profiles.bio, profiles.skills,
-               profiles.github, profiles.linkedin, profiles.project_name, profiles.project_description
+        SELECT
+            users.id,
+            users.name,
+            users.email,
+            profiles.bio,
+            profiles.skills,
+            profiles.github,
+            profiles.linkedin,
+            profiles.project_name,
+            profiles.project_description
         FROM users
-        JOIN profiles ON users.id = profiles.user_id
+        LEFT JOIN profiles
+        ON users.id = profiles.user_id
         WHERE users.id = ?
     """, (user_id,)).fetchone()
+
+    print(candidate)
+
     conn.close()
 
     if not candidate:

@@ -7,15 +7,11 @@ Built for **BuildByte Hackathon 2026**
 
 ---
 
-## Team
-
-**Team Name:** [Your Team Name]
+## Team - CODENYX 
 
 **Team Members:**
-- [Member 1 Name] — [Role, e.g. Backend Developer]
-- [Member 2 Name] — [Role, e.g. Frontend Developer]
-- [Member 3 Name] — [Role, e.g. UI/UX Designer]
-- [Member 4 Name] — [Role]
+- Aleena Khalid - CS25056
+- Laiba Qasim - CS25069
 
 ---
 
@@ -61,6 +57,64 @@ Traditional hiring relies heavily on resumes and self-reported skills, which are
 
 ---
 
+## Screenshots / Demo Preview
+
+### Landing Page
+SkillAI's modern landing page introducing the AI-powered skill verification platform.
+
+![Landing Page](images/index.png)
+
+
+### Candidate Registration
+Candidates can create an account and choose their role as a candidate or recruiter.
+
+![Registration Page](static\images\register.png)
+
+
+### Login Page
+Secure login system with password hashing and role-based authentication.
+
+![Login Page](static\images/login.png)
+
+
+### Candidate Dashboard
+Candidates can view their verification score, earned badges, verified skills, and profile progress.
+
+![Candidate Dashboard](static\images/dashboard.png)
+
+
+### Profile Builder
+Candidates create their professional profile with skills, portfolio links, and featured projects.
+
+![Profile Page](static\images/profile.png)
+
+
+### Skill Assessment
+AI-powered assessment system with MCQs and short-answer evaluation.
+
+![Assessment Page](static\images/challenge.png)
+
+
+### AI Evaluation Result
+Instant skill verification results with scores, badges, and assessment breakdown.
+
+![Assessment Result](static\images/result.png)
+
+
+### Recruiter Dashboard
+Employers can explore verified candidates and review their demonstrated skills.
+
+![Recruiter Dashboard](static\images/recruiter.png)
+
+
+### Candidate Verification Profile
+Recruiters can view detailed candidate profiles, skills, projects, and portfolio links.
+
+![Candidate Profile](static\images/candidate.png)
+
+---
+
+
 ## Project Structure
 
 ```
@@ -73,6 +127,15 @@ BuildByte-Codenyx/
 ├── .env                    # Environment variables (not committed)
 ├── .gitignore
 │
+├── static/
+├──   images/
+│   ├── resume.png
+│   ├── candidate.png
+│   ├── challenge.png
+│   ├── index.png
+│   ├── result.png
+|   ├── dashboard.png
+|
 ├── templates/
 │   ├── index.html
 │   ├── register.html
@@ -193,3 +256,6 @@ Standard library modules used (no install needed): `sqlite3`, `os`, `json`.
 ## License
 
 Built for BuildByte Hackathon 2026 — for educational and demonstration purposes.
+
+- For any query: Contact aleenakhalid2007@gmail.com | desailaiba95@gmail.com 
+- NED UNIVERSITY OF ENGINEERING & TECHNOLOGY, KARACHI

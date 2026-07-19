@@ -57,6 +57,13 @@
             <h2 class="text-center mb-2">Welcome Back</h2>
             <p class="text-center auth-subtext mb-4">Login to continue to SkillAI</p>
 
+             <!-- SUCCESS MESSAGE -->
+             {% if success %}
+                <div class="success-message">
+                 {{ success }}
+                </div>
+             {% endif %}
+
             <form method="POST" action="/login">
 
                 <div class="mb-3">
