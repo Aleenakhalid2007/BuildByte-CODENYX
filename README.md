@@ -68,43 +68,43 @@ SkillAI's modern landing page introducing the AI-powered skill verification plat
 ### Candidate Registration
 Candidates can create an account and choose their role as a candidate or recruiter.
 
-![Registration Page](static\images\register.png)
+![Registration Page](static/images/register.png)
 
 
 ### Login Page
 Secure login system with password hashing and role-based authentication.
 
-![Login Page](static\images/login.png)
+![Login Page](static/images/login.png)
 
 
 ### Candidate Dashboard
 Candidates can view their verification score, earned badges, verified skills, and profile progress.
 
-![Candidate Dashboard](static\images/dashboard.png)
+![Candidate Dashboard](static/images/dashboard.png)
 
 
 ### Profile Builder
 Candidates create their professional profile with skills, portfolio links, and featured projects.
 
-![Profile Page](static\images/profile.png)
+![Profile Page](static/images/profile.png)
 
 
 ### Skill Assessment
 AI-powered assessment system with MCQs and short-answer evaluation.
 
-![Assessment Page](static\images/challenge.png)
+![Assessment Page](static/images/challenge.png)
 
 
 ### AI Evaluation Result
 Instant skill verification results with scores, badges, and assessment breakdown.
 
-![Assessment Result](static\images/result.png)
+![Assessment Result](static/images/result.png)
 
 
 ### Recruiter Dashboard
 Employers can explore verified candidates and review their demonstrated skills.
 
-![Recruiter Dashboard](static\images/recruiter.png)
+![Recruiter Dashboard](static/images/recruiter.png)
 
 
 ### Candidate Verification Profile
