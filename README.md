@@ -57,7 +57,7 @@ Traditional hiring relies heavily on resumes and self-reported skills, which are
 
 ---
 
-## Screenshots / Demo Preview
+## Demo Preview
 
 ### Landing Page
 SkillAI's modern landing page introducing the AI-powered skill verification platform.
